@@ -20,6 +20,9 @@ variable "instance_type" {
   description = "The instance class of the Minecraft server."
   default = "m5.large"
 }
+variable "instance_user_data" {
+  description = "The rendered user data used to configure the Minecraft server"
+}
 variable "instance_volume_size" {
   type =  number
   description = "The capacity of the root volume (GB)"

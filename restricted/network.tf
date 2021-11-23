@@ -7,7 +7,7 @@ provider "aws" {
 
 # VPC and Subnets
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/24"
+  cidr_block = "10.0.0.0/26"
   instance_tenancy = "default"
   enable_dns_support = true
   enable_dns_hostnames = true
@@ -17,10 +17,10 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_subnet" "private" {
+resource "aws_subnet" "private_a" {
   vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.0.0/26"
-  availability_zone = us-east-1a
+  cidr_block = "10.0.0.16/28"
+  availability_zone = "${var.region}a"
   map_public_ip_on_launch = false
 
   tags = {
@@ -28,14 +28,36 @@ resource "aws_subnet" "private" {
   }
 }
 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public_a" {
   vpc_id     = aws_vpc.main.vpc.id
-  cidr_block = "10.0.0.0/26"
-  availability_zone = us-east-1a
+  cidr_block = "10.0.0.0/28"
+  availability_zone = "${var.region}a"
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "minecraft-private"
+    Name = "minecraft-public-${var.region}a"
+  }
+}
+
+resource "aws_subnet" "private_b" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.0.48/28"
+  availability_zone = "${var.region}b"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "minecraft-private-${var.region}b"
+  }
+}
+
+resource "aws_subnet" "public_b" {
+  vpc_id     = aws_vpc.main.vpc.id
+  cidr_block = "10.0.0.32/28"
+  availability_zone = "${var.region}b"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "minecraft-public-${var.region}b"
   }
 }
 
@@ -55,13 +77,22 @@ resource "aws_route_table" "main" {
   ]
 }
 
-resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
+resource "aws_route_table_association" "public_a" {
+  subnet_id      = aws_subnet.public_a.id
   route_table_id = aws_route_table.main.id
 }
 
-resource "aws_route_table_association" "private" {
-  subnet_id      = aws_subnet.private.id
+resource "aws_route_table_association" "private_a" {
+  subnet_id      = aws_subnet.private_a.id
+  route_table_id = aws_route_table.main.id
+}
+resource "aws_route_table_association" "public_b" {
+  subnet_id      = aws_subnet.public_b.id
+  route_table_id = aws_route_table.main.id
+}
+
+resource "aws_route_table_association" "private_b" {
+  subnet_id      = aws_subnet.private_b.id
   route_table_id = aws_route_table.main.id
 }
 

@@ -1,52 +1,42 @@
-
-locals {
-  instance_ami = var.instance_ami
-  instance_az = var.availability_zone
-  instance_profile = var.instance_profile
-  instance_ssh_key = var.instance_ssh_key
-  instance_type = var.instance_type
-  instance_volume_type = var.instance_volume_type
-
-  kms_key_id = var.kms_key_id
-
-  ebs_restore_from_snaphot = var.ebs_restore_from_snaphot
-  ebs_snapshot_id = var.ebs_snapshot_id
-  ebs_iops = var.ebs_iops
-
+# Resources
+resource "aws_network_interface" "server" {
   subnet_id = var.subnet_id
 }
 
-# Resources
-resource "aws_network_interface" "server" {
-  subnet_id = local.subnet_id
-}
-
 resource "aws_instance" "server" {
-  ami = data.aws_ami.latest_ubuntu.id
-  availability_zone = local.instance_az
-  instance_type = local.instance_type
+  ami = var.instance_ami
+  availability_zone = var.instance_az
   iam_instance_profile = local.instance_profile
+  instance_type = local.instance_type
 
   associate_public_ip_address = false
-  ebs_optimized = true
-  key_name = data.aws_kms_key.ssh.name
 
+  key_name = var.instance_ssh_key
 
   network_interface {
     network_interface_id = aws_network_interface.server.id
   }
 
+  ebs_optimized = true
   root_block_device {
     delete_on_termination = true
     encrypted = true
-    kms_key_id = local.kms_key_id
-    volume_type = "gp3"
-    volume_size = 20
+    kms_key_id = var.kms_key_id
+    volume_type = var.instance_volume_type
+    volume_size = var.instance_volume_size
+  }
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_put_response_hop_limit = 1
+    http_token = "optional"
   }
 
   vpc_security_group_ids {
 
   }
+
+  user_data = var.instance_user_data
 
   tags {
     Name = var.server_name
@@ -54,12 +44,12 @@ resource "aws_instance" "server" {
 }
 
 resource "aws_ebs_volume" "server" {
-  availability_zone = local.instance_az
-  size              = 60
+  availability_zone = var.instance_az
+  size              = var.ebs_volume_size
   encrypted         = true
   kms_key_id        = local.kms_key_id
-  iops              = 3000
-  snapshot_id       = local.restore_from_snapshot == true ? local.ebs_snapshot_id : null
+  iops              = var.ebs_volume_iops
+  snapshot_id       = var.restore_from_snapshot == true ? var.ebs_snapshot_id : null
   tags = {
     Name = "minecraft-server-device"
     instance = aws_instance.server.id
