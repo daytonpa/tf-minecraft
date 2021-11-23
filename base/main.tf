@@ -5,14 +5,11 @@
 
 data "aws_ami" "latest_ubuntu" {
   most_recent = true
-
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-
   owners = ["099720109477"] # Canonical
-
 }
 
 data "aws_kms_key" "ssh" {
@@ -31,7 +28,7 @@ module "minecraft_server" "main" {
   server_name = "minecraft-server-${count.index}"
 
   instance_ami = data.aws_ami.latest_ubuntu.id
-  instance_az = each.value.az
+  instance_az = each.value.primary == true ? var.primary_az : var.recovery_az
   instance_profile = "minecraft-server-role"
   instance_ssh_key = data.aws_key_pair.server.name
   instance_type = each.value.instance_class
@@ -41,16 +38,16 @@ module "minecraft_server" "main" {
   kms_key_id = data.aws_kms_key.encrypt.id
 
   # Root volume
-  instance_volume_type = "gp3"
-  instance_volume_iops = 500
-  instance_volume_size = 20
+  instance_volume_type = each.value.instance_volume_type
+  instance_volume_iops = each.value.instance_volume_iops
+  instance_volume_size = each.value.instance_volume_size
 
   # EBS data volume
-  ebs_restore_from_snapshot = false
-  # ebs_snaphot_id = null
-  ebs_volume_type = "gp3"
-  ebs_volume_iops = 3000
-  ebs_volume_size = 60
+  ebs_restore_from_snapshot = each.value.ebs_restore_from_snapshot
+  ebs_snaphot_id = each.value.ebs_snaphot_id
+  ebs_volume_type = each.value.ebs_volume_type
+  ebs_volume_iops = each.value.ebs_volume_iops
+  ebs_volume_size = each.value.ebs_volume_size
 
   tags = {
   
