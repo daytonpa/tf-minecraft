@@ -12,4 +12,6 @@ Terraform templates are divided into 2 separate stacks:
   2) Base
     - VPN/bastion, Minecraft server, and instance-level Security Groups.
 
+Before getting started, be certain to complete the initial steps listed in the [prerequisites](./prerequisites) part of this repository.
+
 *(This is still in progress.  Would not recommend actually using just yet)*

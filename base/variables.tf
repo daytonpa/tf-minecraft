@@ -16,5 +16,21 @@ variable "recovery_az" {
 
 variable "minecraft_servers" {
   type = map
-  decription = "Details around the minecraft server, or several"
+  decription = "Details around the Minecraft server, or several"
+}
+
+variable "ebs_backups_enabled" {
+  type = bool
+  description = "Should backups be enabled"
+  default = false
+}
+variable "ebs_backups_frequency" {
+  type = number
+  description = "The frequency which EBS data disk backups will be taken (in hours)"
+  default = 24
+} 
+variable "ebs_backups_lifespan" {
+  type = number
+  description = "The number of snapshots that should be retained"
+  default = 7
 }

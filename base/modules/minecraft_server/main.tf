@@ -4,42 +4,43 @@ resource "aws_network_interface" "server" {
 }
 
 resource "aws_instance" "server" {
-  ami = var.instance_ami
-  availability_zone = var.instance_az
-  iam_instance_profile = local.instance_profile
-  instance_type = local.instance_type
+  ami                           = var.instance_ami
+  subnet_id                     = var.subnet_id
+  iam_instance_profile          = local.instance_profile
+  instance_type                 = local.instance_type
 
-  associate_public_ip_address = false
+  associate_public_ip_address   = false
 
-  key_name = var.instance_ssh_key
+  key_name                      = var.instance_ssh_key
 
   network_interface {
-    network_interface_id = aws_network_interface.server.id
+    network_interface_id        = aws_network_interface.server.id
   }
 
-  ebs_optimized = true
+  ebs_optimized                 = true
   root_block_device {
-    delete_on_termination = true
-    encrypted = true
-    kms_key_id = var.kms_key_id
-    volume_type = var.instance_volume_type
-    volume_size = var.instance_volume_size
+    delete_on_termination       = true
+    encrypted                   = true
+    kms_key_id                  = var.kms_key_id
+    volume_type                 = var.instance_volume_type
+    volume_size                 = var.instance_volume_size
+    iops                        = var.instance_volume_iops
   }
 
   metadata_options {
-    http_endpoint = "enabled"
+    http_endpoint               = "enabled"
     http_put_response_hop_limit = 1
-    http_token = "optional"
+    http_token                  = "optional"
   }
 
   vpc_security_group_ids {
 
   }
 
-  user_data = var.instance_user_data
+  user_data                     = var.instance_user_data
 
   tags {
-    Name = var.server_name
+    Name                        = var.server_name
   }
 }
 
@@ -53,6 +54,7 @@ resource "aws_ebs_volume" "server" {
   tags = {
     Name = "minecraft-server-device"
     instance = aws_instance.server.id
+    backups_enabled = var.ebs_backups_enabled
   }
 }
 

@@ -1,10 +1,10 @@
 
-locals {
-  region_shortname = var.region == "us-east-1" ? "use1" : "use2"
-}
+# locals {
+#   region_shortname = var.region == "us-east-1" ? "use1" : "use2"
+# }
 
 # Roles
-resource "aws_iam_role" "minecraft_server" {
+resource "aws_iam_role" "server" {
   name = "minecraft-server-role"
   path = "/"
 
@@ -48,7 +48,7 @@ EOF
 
 # Instance profiles
 
-resource "aws_iam_imstance_profile" "minecraft_bastion" {
+resource "aws_iam_instance_profile" "bastion" {
   name = "minecraft-server-profile"
   role = aws_iam_role.minecraft_bastion.name
 }
@@ -74,7 +74,7 @@ resource "aws_iam_role" "minecraft_bastion" {
 EOF
 }
 
-resource "aws_iam_imstance_profile" "minecraft_server" {
+resource "aws_iam_instance_profile" "server" {
   name = "minecraft-server-profile"
   role = aws_iam_role.minecraft_server.name
 }
