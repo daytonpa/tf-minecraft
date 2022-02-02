@@ -1,0 +1,93 @@
+
+variable "instance_ami" {
+  type = string
+  description = "The Minecraft server AMI to use for creating the instance"
+}
+variable "instance_az" {
+  type = string
+  description = "The instance's AWS Availability Zone"
+}
+variable "instance_profile" {
+  type= string
+  description = "The IAM profile ARN assigned to the instance"
+}
+variable "instance_ssh_key" {
+  type = string
+  description = "The SSH key name used for OS access"
+}
+variable "instance_type" {
+  type = string
+  description = "The instance class of the Minecraft server."
+}
+variable "instance_user_data" {
+  description = "The rendered user data used to configure the Minecraft server"
+}
+variable "instance_volume_size" {
+  type =  number
+  description = "The capacity of the root volume (GB)"
+  default = 20
+}
+variable "instance_volume_type" {
+  type = string
+  description = "gp3"
+}
+variable "instance_volume_iops" {
+  type = number
+  description = 500
+}
+
+variable "ebs_restore_from_snaphot" {
+  type = bool
+  description = "Should the new EBS volume be restored from a snapshot"
+  default = false
+}
+variable "ebs_snapshot_id" {
+  type = string
+  description = "The snaphot ID for the EBS data recovery process"
+  default = null
+}
+variable "ebs_volume_iops" {
+  type = number
+  description = "Provioned IOPS for the EBS volume"
+  default = 1000
+}
+variable "ebs_volume_size" {
+  type = number
+  description = "The capacity of the EBS volume (GB)"
+  default = 50
+}
+variable "ebs_volume_type" {
+  type = string
+  description = "The device type"
+  validation {
+    condition = can(regex("(gp3|io1|io2)"))
+    error_message = "The \"ebs_volume_type\" must be \"gp3\", \"io1\", or \"io2\". "
+  }
+}
+variable "ebs_backups_enabled" {
+  type = bool
+  description = "Should backups be enabled"
+}
+variable "ebs_backups_frequency" {
+  type = number
+  description = "The frequency which EBS data disk backups will be taken (in hours)"
+}
+variable "ebs_backups_lifespan" {
+  type = number
+  description = "The number of snapshots that should be retained"
+}
+
+variable "kms_key_id" {
+  type = string
+  description = "The ARN of the KMS key used for encryption"
+}
+
+variable "server_name" {
+  type = string
+  descrition = "minecraft-server"
+}
+
+variable "subnet_id" {
+  type = string
+  description = "The ID of the subnet where you'll generate the Minecraft server's network interface"
+}

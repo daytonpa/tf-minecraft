@@ -12,7 +12,7 @@ resource "aws_kms_key" "minecraft" {
   }
 }
 
-resource "aws_s3_bucket" "minecraft" {
+resource "aws_s3_bucket" "minecraft_data" {
   bucket = "minecraft-${local.region_shortname}-bucket"
   acl    = "private"
 
@@ -30,7 +30,7 @@ resource "aws_s3_bucket" "minecraft" {
   }
 }
 
-resource "aws_s3_bucket" "logs" {
+resource "aws_s3_bucket" "minecraft_logs" {
   bucket = "minecraft-bucket-${local.region_shortname}"
   acl    = "log-delivery-write"
 

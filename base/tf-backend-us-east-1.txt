@@ -1,0 +1,4 @@
+bucket          = "tf-minecraft-backend-us-east-1"
+dynamodb_table  = "tf-minecraft-backend-us-east-1"
+kms_key_id      = "CREATE KEY FIRST"
+region          = "us-east-1"

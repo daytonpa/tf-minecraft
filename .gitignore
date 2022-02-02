@@ -1,0 +1,8 @@
+.terraform.*
+
+base/.terraform
+base/common/environments/*.tfvars
+base/protected/environments/*.tfvars
+
+restricted/.terraform
+restricted/environments/*tfvars
