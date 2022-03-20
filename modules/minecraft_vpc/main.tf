@@ -1,69 +1,47 @@
-
-
-provider "aws" {
-  alias = var.aws_region_alias
-  region = var.aws_region
-}
-
-# VPC and Subnets
-resource "aws_vpc" "main" {
-  cidr_block = var.vpc_cidr
-  instance_tenancy = "default"
-  enable_dns_support = true
-  enable_dns_hostnames = true
-
-  tags = {
-    Name = "minecraft-vpc-${}"
-  }
-}
-
-resource "aws_subnet" "private" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.0.0/26"
-  availability_zone = 
-  map_public_ip_on_launch = false
-
-  tags = {
-    Name = "minecraft-private"
-  }
-}
-
-resource "aws_subnet" "public" {
-  vpc_id     = aws_vpc.main.vpc.id
-  cidr_block = "10.0.0.0/26"
-  availability_zone = us-east-1a
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "minecraft-private"
-  }
-}
-
-# IG and Routes
-resource "aws_internet_gateway" "main" {
-  vpc_id = aws_vpc.main.id
-}
-
-resource "aws_route_table" "main" {
-  vpc_id = aws_vpc.main.id
-
-  route = [
+locals {
+  public_subnet_tags = merge(var.global_tags,
     {
-      cidr_block = "0.0.0.0/0"
-      gateway_id = aws_internet_gateway.main.id
+      Subnet_Type = "Public"
+      Terraform = "true"
     }
-  ]
+  
+  )
+  private_subnet_tags = merge(var.global_tags,
+    {
+      Subnet_Type = "Private"
+      Terraform = "true"
+    }
+  
+  )
+  vpc_tags = merge(var.global_tags,
+    {
+      
+    }
+  )
 }
 
-resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
-  route_table_id = aws_route_table.main.id
+module "minecraft_vpc" {
+  source = "git://github.com/terraform-aws-modules/vpc/aws"
+
+  name = "minecraft_vpc_${var.aws_region_shortname}"
+  cidr = var.vpc_cidr
+
+  create_igw = true
+
+  enable_dns_hostnames = true
+  enable_dns_support = true
+  enable_vpn_gateway = true
+  enable_nat_gateway = true
+  single_nat_gateway = true
+
+  # Tags
+  public_subnet_tags = local.public_subnet_tags
+  private_subnet_tags = local.private_subnet_tags
+  vpc_tags = local.vpc_tags
+
+  for_each = var.vpc_subnet_map  
+  azs = each.value.az
+  private_subnets = each.value.private_subnets
+  public_subnets = each.value.public_subnets
+
 }
-
-resource "aws_route_table_association" "private" {
-  subnet_id      = aws_subnet.private.id
-  route_table_id = aws_route_table.main.id
-}
-
-# ***************** SECURITY GROUPS *****************
-
