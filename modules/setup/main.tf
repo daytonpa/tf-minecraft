@@ -24,6 +24,11 @@ resource "aws_s3_bucket" "terraform_backend" {
   bucket = local.s3name
 }
 
+resource "aws_s3_bucket_acl" "terraform_backend" {
+  bucket = aws_s3_bucket.terraform_backend.id
+  acl    = "private"
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
   count  = local.s3e ? 1 : 0
   bucket = aws_s3_bucket.terraform_backend.bucket
