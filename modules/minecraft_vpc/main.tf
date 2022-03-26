@@ -13,11 +13,7 @@ locals {
     }
   
   )
-  vpc_tags = merge(var.global_tags,
-    {
-      
-    }
-  )
+  global_tags = var.global_tags
 }
 
 module "minecraft_vpc" {
@@ -33,6 +29,9 @@ module "minecraft_vpc" {
   enable_vpn_gateway = true
   enable_nat_gateway = true
   single_nat_gateway = true
+
+  enable_dhcp_options = var.custom_dns ? true : false
+  dhcp_options_domain_name = var.custom_dns ? var.vpc_dns_name : nil
 
   # Tags
   public_subnet_tags = local.public_subnet_tags

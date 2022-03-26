@@ -10,6 +10,18 @@ variable "aws_region_shortname" {
   default = "use1"
 }
 
+variable "custom_dns" {
+  description = "Do you have a custom DNS name you'd like to use?"
+  type = bool
+  default = false
+}
+
+variable "vpc_dns_name" {
+  description = "Do you have a custom DNS name you'd like to use?"
+  type = string
+  default = "nothing"
+}
+
 variable "vpc_cidr" {
   description = "The full CIDR range for your Minecraft network"
   type = string
