@@ -13,7 +13,6 @@ locals {
     }
   
   )
-  global_tags = var.global_tags
 }
 
 module "minecraft_vpc" {
@@ -24,8 +23,8 @@ module "minecraft_vpc" {
 
   create_igw = true
 
-  enable_dns_hostnames = true
-  enable_dns_support = true
+  enable_dns_hostnames = var.custom_dns ? true : false
+  enable_dns_support = var.custom_dns ? true : false
   enable_vpn_gateway = true
   enable_nat_gateway = true
   single_nat_gateway = true

@@ -1,5 +1,6 @@
 resource "aws_security_group" "minecraft_server" {
-  name = "minecraft-base-"
+  name = "minecraft-server-${aws_region_shortname}"
+  description = "Rules for the Minecraft Game server."
   vpc_id = aws_vpc.main.id
 }
 
