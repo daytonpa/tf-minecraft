@@ -1,4 +1,3 @@
-
 variable "instance_type" {
   type = string
   description = "The AWS instance clas to use for the Minecraft server"
