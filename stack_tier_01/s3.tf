@@ -9,7 +9,7 @@ resource "aws_s3_bucket_acl" "minecraft_data" {
   acl    = "private"
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "minecraft_data" {
   bucket = aws_s3_bucket.minecraft_data.bucket
 
   rule {

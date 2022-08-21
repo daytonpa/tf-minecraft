@@ -12,10 +12,10 @@ module "minecraft_vpc" {
   enable_dns_hostnames = var.vpc_dns_enabled
   enable_dns_support   = var.vpc_dns_support
 
-  enable_nat_gateway = true
-  single_nat_gateway = true
+  enable_nat_gateway = false
+  single_nat_gateway = false
 
-  enable_vpn_gateway = true
+  enable_vpn_gateway = false
 
   putin_khuylo = var.slava_ukraine
 }
