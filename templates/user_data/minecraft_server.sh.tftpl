@@ -1,4 +1,44 @@
 #!/bin/bash
-
 set -e
 
+CHEF_REPO_PATH=${chef_repo_path}
+
+sudo apt update
+
+sudo apt install -y \
+  jq \
+  vim \
+  wget \
+  unzip
+
+# Install the AWS CLI
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# Install chef
+curl -L https://omnitruck.chef.io/install.sh | sudo bash -- -v ${chef_client_version}
+
+# Download our chef-repo bundle from S3 and unpack
+aws s3 cp ${s3_bucket_name}/${s3_bucket_path} \
+  /var/tmp/minecraft-chef-repo.tar.gz
+tar -xzvf /var/tmp/minecraft-chef-repo.tar.gz
+
+# Configure the chef-solo runner
+cat <<EOF
+solo              true
+
+cookbooks_path    '$CHEF_REPO_PATH/cookbooks
+environment_path  '$CHEF_REPO_PATH/environments
+roles_path        '$CHEF_REPO_PATH/roles
+
+log_level         :info
+
+chef_license      'always'
+EOF > /etc/chef/solo.rb
+
+# Run the chef-client
+chef-solo \
+  --override-runlist 'role[minecraft_server]' \
+  --environment 'minecraft_server' \
+  > /var/log/chef-solo-run.log
