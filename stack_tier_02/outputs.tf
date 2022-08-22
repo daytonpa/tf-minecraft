@@ -1,16 +1,9 @@
 output "sg_minecraft_base_id" {
-  value = ""
+  value = module.minecraft_network_and_firewalls.sg_minecraft_base_id
 }
 output "sg_minecraft_server_id" {
-  value = ""
+  value = module.minecraft_network_and_firewalls.sg_minecraft_server_id
 }
-output "sg_minecraft_vpn_id" {
-  value = ""
-}
-
-output "kms_ebs_id" {
-  value = ""
-}
-output "kms_s3_id" {
-  value = ""
+output "sg_minecraft_bastion_id" {
+  value = module.minecraft_network_and_firewalls.sg_minecraft_bastion_id
 }
