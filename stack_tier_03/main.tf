@@ -7,7 +7,6 @@ module "minecraft_server" "main" {
 
   server_name = each.name
 
-  instance_ami = data.aws_ami.latest_ubuntu.id
   instance_subnet = each.value.primary == true ? data.aws_subnet.private_primary.id : data.aws_subnet.private_recovery.id
   instance_profile = "minecraft-server-role"
   instance_ssh_key = data.aws_key_pair.server.name
@@ -39,7 +38,7 @@ module "minecraft_server" "main" {
   )
 
   lifecycle {
-    ignore_changes = [instance_ami, tags]
+    ignore_changes = [instance_ami]
   }
 }
 

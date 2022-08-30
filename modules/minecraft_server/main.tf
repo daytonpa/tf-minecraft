@@ -1,19 +1,3 @@
-
-locals {
-  instance_ami = var.ami
-  instance_az = var.availability_zone
-  instance_profile = var.instance_profile
-  instance_ssh_key = var.ssh_key
-  instance_type = var.instance_type
-  
-  kms_key_id = var.kms_key_id
-
-  ebs_restore_from_snaphot = var.restore_from_snaphot
-  ebs_snapshot_id = var.snapshot_id
-
-  subnet_id = var.subnet_id
-}
-
 # Resources
 resource "aws_network_interface" "server" {
   subnet_id = local.subnet_id
@@ -39,27 +23,27 @@ resource "aws_instance" "server" {
     encrypted = true
     kms_key_id = local.kms_key_id
     volume_type = "gp3"
-    volume_size = 20
+    volume_size = 32
   }
 
-  vpc_security_group_ids {
+  vpc_security_group_ids = var.minecraft_server_sgs
 
-  }
+  user_data = local.minecraft_server_user_data
 
   tags {
     Name = var.server_name
   }
 }
-
+mine
 resource "aws_ebs_volume" "server" {
   availability_zone = local.instance_az
-  size              = 60
+  size              = 64
   encrypted         = true
   kms_key_id        = local.kms_key_id
-  iops              = 3000
+  iops              = 500
   snapshot_id       = local.restore_from_snapshot == true ? local.ebs_snapshot_id : null
   tags = {
-    Name = "minecraft-server-device"
+    Name = "minecraft-server-data"
     instance = aws_instance.server.id
   }
 }
