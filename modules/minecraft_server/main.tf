@@ -34,7 +34,7 @@ resource "aws_instance" "server" {
     Name = var.server_name
   }
 }
-mine
+
 resource "aws_ebs_volume" "server" {
   availability_zone = local.instance_az
   size              = 64

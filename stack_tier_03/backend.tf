@@ -1,9 +1,9 @@
 # Global stuff
 terraform {
   backend "s3" {
-    bucket = "tf-minecraft-data-${var.region}"
-    key    = "statefiles/base"
-    region = var.region
+    bucket = "minecraft-terraform-states"
+    key    = "statefiles/stack_tier_03.state"
+    region = "us-east-2"
 
     dynamodb_table = "minecraft-terraform-state-lock"
     encrypt = true
