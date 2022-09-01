@@ -12,7 +12,7 @@ terraform {
 
 provider "aws" {
   region = var.region
-  profile = "${var.account_id}/${var.iam_profile_name}"
+  profile = var.profile
 }
 
 # Remote states

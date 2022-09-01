@@ -6,6 +6,7 @@ module "minecraft_server" {
   for_each = var.minecraft_servers
 
   server_name = each.value.name
+  minecraft_version = each.value.minecraft_version
 
   instance_subnet = each.value.primary == true ? data.aws_subnet.private_primary.id : data.aws_subnet.private_recovery.id
   instance_profile = "minecraft-server-role"
