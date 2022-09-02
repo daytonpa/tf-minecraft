@@ -14,7 +14,7 @@ provider "aws" {
   profile = var.profile
   default_tags {
     tags = {
-      teraform = "true"
+      terraform = "true"
       tf-stack = "stack_tier_02"
     }
   }
