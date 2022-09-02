@@ -10,7 +10,7 @@ module "minecraft_server" {
 
   instance_os = each.value.instance_os
   instance_subnet = each.value.primary == true ? local.primary_subnet_id : local.recovery_subnet_id
-  instance_profile = "minecraft-server-role"
+  instance_profile = "minecraft-server-profile"
   instance_ssh_key = data.terraform_remote_state.stack_tier_02.outputs.ssh_key_name
   instance_type = each.value.instance_class
 

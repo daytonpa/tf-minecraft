@@ -29,6 +29,7 @@ resource "aws_ssm_parameter" "ssh" {
   name        = "/ssh/server"
   description = "The private SSH Key for EC2 instances."
   type        = "SecureString"
+  key_id      = aws_kms_key.ssm.id
   value       = tls_private_key.ssh.private_key_openssh
 
   tags = {

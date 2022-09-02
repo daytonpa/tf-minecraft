@@ -15,7 +15,7 @@ variable "instance_subnet" {
 
 variable "instance_profile" {
   type = string
-  default = "minecraft-server-role"
+  default = ""
 }
 
 variable "instance_ssh_key" {
