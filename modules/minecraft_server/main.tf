@@ -1,6 +1,7 @@
 # Resources
 resource "aws_network_interface" "server" {
   subnet_id = data.aws_subnet.main.id
+  security_groups = var.minecraft_server_sgs
 }
 
 resource "aws_instance" "server" {
@@ -8,7 +9,6 @@ resource "aws_instance" "server" {
   instance_type = local.instance_type
   iam_instance_profile = local.instance_profile
 
-  associate_public_ip_address = false
   ebs_optimized = true
   key_name = var.instance_ssh_key
 
@@ -25,8 +25,6 @@ resource "aws_instance" "server" {
     volume_type = "gp3"
     volume_size = 32
   }
-
-  vpc_security_group_ids = var.minecraft_server_sgs
 
   user_data = local.minecraft_server_user_data
 
