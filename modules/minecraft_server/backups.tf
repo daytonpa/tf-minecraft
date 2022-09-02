@@ -1,7 +1,9 @@
 
 resource "aws_dlm_lifecycle_policy" "minecraft_server_data" {
+  count = var.ebs_backups_enabled == true ? 1 : 0
   description = "EBS backup policy for Minecraft server data"
-  state = var.ebs_backups_enabled == true ? "ENABLED" : "DISABLED"
+
+  execution_role_arn = var.ebs_backups_exec_role
 
   policy_details {
     resource_types = ["VOLUME"]
@@ -11,7 +13,7 @@ resource "aws_dlm_lifecycle_policy" "minecraft_server_data" {
 
       create_rule {
         interval = 24
-        interval_units = "HOURS"
+        interval_unit = "HOURS"
         times = ["23:45"]
       }
       retain_rule {

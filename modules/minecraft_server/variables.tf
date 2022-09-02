@@ -28,6 +28,20 @@ variable "instance_type" {
   default = "t3.medium"
 }
 
+variable "instance_os" {
+  type = string
+  default = "ubuntu-22.04"
+  validation {
+    condition     = length(regexall("^(amazon|centos|ubuntu)", split("-", var.instance_os)[0])) > 0
+    error_message = <<-MESSAGE
+  You may only use a supported OS. 
+  - Refer to the README for supported operating systems and versions.
+  - Example -> "ubuntu-22.04"
+
+    MESSAGE
+  }
+}
+
 variable "kms_key_id" {
   type = string
   default = ""
@@ -59,6 +73,10 @@ variable "ebs_backups_lifespan" {
   type = string
   default = null
 }
+variable "ebs_backups_exec_role" {
+  type = string
+  default = ""
+}
 variable "ebs_restore_from_snapshot" {
   type = bool
   default = false
@@ -81,7 +99,12 @@ variable "ebs_volume_size" {
   default = 500
 }
 
+variable "minecraft_server_sgs" {
+  type = list
+  default = ["default"]
+}
+
 variable "tags" {
-  type = map(object({}))
+  type = map(any)
   default = {}
 }
