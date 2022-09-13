@@ -29,6 +29,10 @@ resource "aws_instance" "server" {
   user_data = local.minecraft_server_user_data
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [ami]
+  }
 }
 
 resource "aws_ebs_volume" "server" {

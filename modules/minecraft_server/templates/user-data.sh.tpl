@@ -1,38 +1,25 @@
 #!/bin/bash
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 set -e
 
 LOG_FILE=/var/log/user-data.log
 
-function user_data_script() {
-  echo -e "\n[$(date)] INFO: Starting User Data script\n"
-  sudo apt update -y && \
-    sudo apt upgrade -y 
+echo -e "\n[$(date)] INFO: Starting User Data script.\n"
+sudo yum update -y
+sudo yum install -y \
+  aws-cli \
+  awslogs \
+  ecs-init \
+  jq \
+  vim 
 
-  sudo apt install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    jq \
-    software-properties-common \
-    vim
+echo -e "\n[$(date)] INFO: Configuring ECS Agent for instance.\n"
 
-  echo -e "\n[$(date)] INFO: Installing Docker\n"
-  curl -fsSL \
-    https://download.docker.com/linux/ubuntu/gpg \
-    | sudo gpg --dearmor \
-    -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "ECS_CLUSTER=${cluster_name}"  > /etc/ecs/ecs.config
+echo "ECS_LOGFILE=${log_file_path}" >> /etc/ecs/ecs.config
+echo "ECS_LOGLEVEL=${log_level}"    >> /etc/ecs/ecs.config
+echo "ECS_LOG_OUTPUT_FORMAT=logfmt" >> /etc/ecs/ecs.config
 
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-    | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-  sudo apt update -y
-  sudo apt-cache policy docker-ce
-  sudo apt install -y docker-ce
-  usermod -aG docker ubuntu
-
-  echo -e "\n[$(date)] INFO: Starting Minecraft server disk setup (kinda...)\n"
-  mkdir -p /opt/minecraft/data
-}
-
-user_data_script "$@" > $LOG_FILE
+echo -e "\n[$(date)] INFO: Starting Minecraft server disk setup (kinda...).\n"
+mkdir -p /opt/minecraft/data

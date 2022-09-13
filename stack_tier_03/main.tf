@@ -7,6 +7,7 @@ module "minecraft_server" {
 
   server_name = each.value.name
   minecraft_version = each.value.minecraft_version
+  minecraft_server_port = data.terraform_remote_state.stack_tier_02.outputs.sg_minecraft_server_port
 
   instance_os = each.value.instance_os
   instance_subnet = each.value.primary == true ? local.primary_subnet_id : local.recovery_subnet_id
@@ -49,10 +50,6 @@ module "minecraft_server" {
     "Name": each.value.name,
     "ebs_backups_enabled": "false"
   }
-
-  # lifecycle {
-  #   ignore_changes = [instance_ami]
-  # }
 }
 
 # resource "aws_instance" "vpn_bastion" {

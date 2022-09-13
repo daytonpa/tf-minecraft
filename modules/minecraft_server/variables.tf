@@ -8,6 +8,11 @@ variable "minecraft_version" {
   default = "latest"
 }
 
+variable "minecraft_server_port" {
+  type = number
+  default = 12345
+}
+
 variable "instance_subnet" {
   type = string
   default = ""

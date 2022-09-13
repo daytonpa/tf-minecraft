@@ -20,6 +20,9 @@ locals {
   minecraft_server_user_data  = templatefile(
     "${path.module}/templates/user-data.sh.tpl",
     {
+      cluster_name = var.server_name
+      log_file_path = "/var/log/ecs-agent.log"
+      log_level = "info"
       minecraft_version = var.minecraft_version != null ? var.minecraft_version : "latest"
     }
   )
