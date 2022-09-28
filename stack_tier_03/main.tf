@@ -3,17 +3,17 @@
 module "minecraft_server" {
   source = "../modules/minecraft_server"
 
-  for_each = { for server in var.minecraft_servers: server.name => server }
+  for_each = { for server in var.minecraft_servers : server.name => server }
 
-  server_name = each.value.name
-  minecraft_version = each.value.minecraft_version
+  server_name           = each.value.name
+  minecraft_version     = each.value.minecraft_version
   minecraft_server_port = data.terraform_remote_state.stack_tier_02.outputs.sg_minecraft_server_port
 
-  instance_os = each.value.instance_os
-  instance_subnet = each.value.primary == true ? local.primary_subnet_id : local.recovery_subnet_id
+  instance_os      = each.value.instance_os
+  instance_subnet  = each.value.primary == true ? local.primary_subnet_id : local.recovery_subnet_id
   instance_profile = "minecraft-server-profile"
   instance_ssh_key = data.terraform_remote_state.stack_tier_02.outputs.ssh_key_name
-  instance_type = each.value.instance_class
+  instance_type    = each.value.instance_class
 
   kms_key_id = data.terraform_remote_state.stack_tier_02.outputs.kms_key_ebs_id
 
@@ -26,29 +26,29 @@ module "minecraft_server" {
   ebs_volume_type = each.value.ebs_volume_type
   ebs_volume_iops = each.value.ebs_volume_iops
   ebs_volume_size = each.value.ebs_volume_size
-  
+
   # ebs_restore_from_backup = false
 
-  ebs_backups_enabled    = each.value.ebs_backups_enabled
-  ebs_backups_frequency  = each.value.ebs_backups_frequency
-  ebs_backups_lifespan   = each.value.ebs_backups_lifespan
-  ebs_backups_exec_role  = data.terraform_remote_state.stack_tier_01.outputs.iam_arns.roles["minecraft-backups-role"]
+  ebs_backups_enabled   = each.value.ebs_backups_enabled
+  ebs_backups_frequency = each.value.ebs_backups_frequency
+  ebs_backups_lifespan  = each.value.ebs_backups_lifespan
+  ebs_backups_exec_role = data.terraform_remote_state.stack_tier_01.outputs.iam_arns.roles["minecraft-backups-role"]
 
   # ebs_restore_from_snapshot = each.value.ebs_restore_from_snapshot
   minecraft_server_sgs = [
     data.terraform_remote_state.stack_tier_02.outputs.sg_minecraft_base_id,
     data.terraform_remote_state.stack_tier_02.outputs.sg_minecraft_server_id,
-  ]    
+  ]
   # ebs_snaphot_id = each.value.ebs_snaphot_
 
   tags = each.value.ebs_backups_enabled == true ? {
-    "Name": each.value.name,
-    "ebs_backups_enabled": "true",
-    "ebs_backups_frequency": each.value.ebs_backups_frequency,
-    "ebs_backups_lifespan": each.value.ebs_backups_lifespan
-  } : {
-    "Name": each.value.name,
-    "ebs_backups_enabled": "false"
+    "Name" : each.value.name,
+    "ebs_backups_enabled" : "true",
+    "ebs_backups_frequency" : each.value.ebs_backups_frequency,
+    "ebs_backups_lifespan" : each.value.ebs_backups_lifespan
+    } : {
+    "Name" : each.value.name,
+    "ebs_backups_enabled" : "false"
   }
 }
 

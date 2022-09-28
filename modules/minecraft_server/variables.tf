@@ -1,40 +1,40 @@
 variable "server_name" {
-  type = string
+  type    = string
   default = "minecraft-server"
 }
 
 variable "minecraft_version" {
-  type = string
+  type    = string
   default = "latest"
 }
 
 variable "minecraft_server_port" {
-  type = number
+  type    = number
   default = 12345
 }
 
 variable "instance_subnet" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "instance_profile" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "instance_ssh_key" {
-  type = string
+  type    = string
   default = "minecraft-ssh"
 }
 
 variable "instance_type" {
-  type = string
+  type    = string
   default = "t3.medium"
 }
 
 variable "instance_os" {
-  type = string
+  type    = string
   default = "ubuntu-22.04"
   validation {
     condition     = length(regexall("^(amazon|centos|ubuntu)", split("-", var.instance_os)[0])) > 0
@@ -48,68 +48,68 @@ variable "instance_os" {
 }
 
 variable "kms_key_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 # Root volume
 variable "instance_volume_type" {
-  type = string
+  type    = string
   default = "gp3"
 }
 variable "instance_volume_iops" {
-  type = string
+  type    = string
   default = 500
 }
 variable "instance_volume_size" {
-  type = string
+  type    = string
   default = 32
 }
-  # EBS data volume
+# EBS data volume
 variable "ebs_backups_enabled" {
-  type = string
+  type    = string
   default = false
 }
 variable "ebs_backups_frequency" {
-  type = string
+  type    = string
   default = null
 }
 variable "ebs_backups_lifespan" {
-  type = string
+  type    = string
   default = null
 }
 variable "ebs_backups_exec_role" {
-  type = string
+  type    = string
   default = ""
 }
 variable "ebs_restore_from_snapshot" {
-  type = bool
+  type    = bool
   default = false
 }
 variable "ebs_snaphot_id" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "ebs_volume_type" {
-  type = string
+  type    = string
   default = "gp3"
 }
 variable "ebs_volume_iops" {
-  type = number
+  type    = number
   default = 500
 }
 variable "ebs_volume_size" {
-  type = number
+  type    = number
   default = 500
 }
 
 variable "minecraft_server_sgs" {
-  type = list
+  type    = list(any)
   default = ["default"]
 }
 
 variable "tags" {
-  type = map(any)
+  type    = map(any)
   default = {}
 }

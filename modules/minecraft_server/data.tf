@@ -1,18 +1,22 @@
-data "aws_ami" "minecraft_server" {
-  most_recent = true
-  filter {
-    name   = "name"
-    values = ["amzn-ami*amazon-ecs-optimized"]
-  }
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-  owners = ["591542846629"] # AWS
+# data "aws_ami" "minecraft_server" {
+#   most_recent = true
+#   filter {
+#     name   = "name"
+#     values = ["amzn-ami*amazon-ecs-optimized"]
+#   }
+#   filter {
+#     name   = "architecture"
+#     values = ["x86_64"]
+#   }
+#   filter {
+#     name   = "virtualization-type"
+#     values = ["hvm"]
+#   }
+#   owners = ["591542846629"] # AWS
+# }
+
+data "aws_ssm_parameter" "aws_ecs_ami" {
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
 }
 
 data "aws_kms_key" "ebs" {
@@ -26,3 +30,4 @@ data "aws_subnet" "main" {
 data "aws_ec2_instance_type" "main" {
   instance_type = var.instance_type
 }
+

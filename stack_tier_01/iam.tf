@@ -8,7 +8,7 @@ resource "aws_iam_instance_profile" "minecraft_bastion" {
 
 data "aws_iam_policy_document" "minecraft_bastion" {
   statement {
-    sid = "IAMS3DataBucketBastionVpnFolder"
+    sid    = "IAMS3DataBucketBastionVpnFolder"
     effect = "Allow"
     actions = [
       "s3:ListBuckets",
@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "minecraft_bastion" {
     ]
   }
   statement {
-    sid = "IAMS3DataBucketBastionCommonFolder"
+    sid    = "IAMS3DataBucketBastionCommonFolder"
     effect = "Allow"
     actions = [
       "s3:ListBuckets",
@@ -41,8 +41,8 @@ resource "aws_iam_policy" "minecraft_bastion" {
   policy      = data.aws_iam_policy_document.minecraft_bastion.json
 }
 resource "aws_iam_policy_attachment" "minecraft_bastion" {
-  name = "minecraft-bastion-role"
-  roles = [aws_iam_role.minecraft_bastion.name]
+  name       = "minecraft-bastion-role"
+  roles      = [aws_iam_role.minecraft_bastion.name]
   policy_arn = aws_iam_policy.minecraft_bastion.arn
 }
 resource "aws_iam_role" "minecraft_bastion" {
@@ -74,41 +74,38 @@ resource "aws_iam_instance_profile" "minecraft_server" {
 
 data "aws_iam_policy_document" "minecraft_server" {
   statement {
-    sid = "IAMS3DataBucketServerVpnFolder"
+    sid    = "ServerS3DataBucketAccessVpnDir"
     effect = "Allow"
-    actions = [
-      "s3:ListBuckets",
-      "s3:PutObject",
-      "s3:ListObjects",
-      "s3:GetObject"
-    ]
+    actions = local.iam_minecraft_server["s3_permissions"]
     resources = [
       aws_s3_bucket.minecraft_data.arn,
       "${aws_s3_bucket.minecraft_data.arn}/data/vpn/*"
     ]
   }
   statement {
-    sid = "IAMS3DataBucketServerCommonFolder"
+    sid    = "ServerS3DataBucketAccessCommonDir"
     effect = "Allow"
-    actions = [
-      "s3:ListBuckets",
-      "s3:ListObjects",
-      "s3:GetObject"
-    ]
+    actions = local.iam_minecraft_server["s3_permissions"]
     resources = [
       "${aws_s3_bucket.minecraft_data.arn}/common/*"
     ]
+  }
+  statement {
+    sid = "ServerEcsPermissions"
+    effect = "Allow"
+    actions = local.iam_minecraft_server["ecs_permissions"]
+    resources = ["*"]
   }
 }
 resource "aws_iam_policy" "minecraft_server" {
   name        = "minecraft-server-role"
   path        = "/"
   description = "A Policy for enabling S3 access to specific S3 Buckets and paths."
-  policy      = data.aws_iam_policy_document.minecraft_bastion.json
+  policy      = data.aws_iam_policy_document.minecraft_server.json
 }
 resource "aws_iam_policy_attachment" "minecraft_server" {
-  name = "minecraft-server-role"
-  roles = [aws_iam_role.minecraft_server.name]
+  name       = "minecraft-server-role"
+  roles      = [aws_iam_role.minecraft_server.name]
   policy_arn = aws_iam_policy.minecraft_server.arn
 }
 resource "aws_iam_role" "minecraft_server" {
@@ -135,7 +132,7 @@ POLICY
 # Minecraft backup role
 data "aws_iam_policy_document" "minecraft_backups" {
   statement {
-    sid = "PlaceholderPolicyWillBeChanged"
+    sid    = "PlaceholderPolicyWillBeChanged"
     effect = "Allow"
     actions = [
       "s3:ListBuckets",
@@ -153,8 +150,8 @@ resource "aws_iam_policy" "minecraft_backups" {
   policy      = data.aws_iam_policy_document.minecraft_backups.json
 }
 resource "aws_iam_policy_attachment" "minecraft_backups" {
-  name = "minecraft-backups-role"
-  roles = [aws_iam_role.minecraft_backups.name]
+  name       = "minecraft-backups-role"
+  roles      = [aws_iam_role.minecraft_backups.name]
   policy_arn = aws_iam_policy.minecraft_backups.arn
 }
 resource "aws_iam_role" "minecraft_backups" {

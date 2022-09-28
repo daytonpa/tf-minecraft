@@ -23,3 +23,5 @@ echo "ECS_LOG_OUTPUT_FORMAT=logfmt" >> /etc/ecs/ecs.config
 
 echo -e "\n[$(date)] INFO: Starting Minecraft server disk setup (kinda...).\n"
 mkdir -p /opt/minecraft/data
+
+echo -e "\n[$(date)] INFO: User data completed."

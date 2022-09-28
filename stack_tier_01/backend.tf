@@ -5,7 +5,7 @@ terraform {
     region = "us-east-2"
 
     dynamodb_table = "minecraft-terraform-state-lock"
-    encrypt = true
+    encrypt        = true
   }
 }
 
@@ -15,7 +15,7 @@ provider "aws" {
   default_tags {
     tags = {
       terraform = "true"
-      tf-stack = "stack_tier_01"
+      tf-stack  = "stack_tier_01"
     }
   }
 }

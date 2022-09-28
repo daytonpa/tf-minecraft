@@ -5,7 +5,7 @@ terraform {
     region = "us-east-2"
 
     dynamodb_table = "minecraft-terraform-state-lock"
-    encrypt = true
+    encrypt        = true
   }
 }
 
@@ -15,7 +15,7 @@ provider "aws" {
   default_tags {
     tags = {
       terraform = "true"
-      tf-stack = "stack_tier_02"
+      tf-stack  = "stack_tier_02"
     }
   }
 }
@@ -26,7 +26,7 @@ data "terraform_remote_state" "stack_tier_01" {
   backend = "s3"
   config = {
     bucket = "minecraft-terraform-states"
-    key = "statefiles/stack_tier_01.state"
+    key    = "statefiles/stack_tier_01.state"
     region = "us-east-2"
   }
 }

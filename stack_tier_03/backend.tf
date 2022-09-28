@@ -6,11 +6,11 @@ terraform {
     region = "us-east-2"
 
     dynamodb_table = "minecraft-terraform-state-lock"
-    encrypt = true
+    encrypt        = true
   }
 }
 
 provider "aws" {
-  region = var.region
+  region  = var.region
   profile = var.profile
 }

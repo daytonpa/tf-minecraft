@@ -1,7 +1,7 @@
 resource "aws_kms_key" "ssm" {
   description = "SSM secrets KMS key."
   key_usage   = "ENCRYPT_DECRYPT"
-  
+
   tags = {
     Name = "minecraft-kms-ssm"
   }
@@ -9,7 +9,7 @@ resource "aws_kms_key" "ssm" {
 resource "aws_kms_key" "ebs" {
   description = "EBS KMS key."
   key_usage   = "ENCRYPT_DECRYPT"
-  
+
   tags = {
     Name = "minecraft-kms-ebs"
   }
@@ -35,4 +35,11 @@ resource "aws_ssm_parameter" "ssh" {
   tags = {
     Name = "/ssh/server"
   }
+}
+
+resource "local_sensitive_file" "ssh" {
+  count           = var.write_ssh_key_to_file == true ? 1 : 0
+  filename        = pathexpand("~/.ssh/minecraft-server.pem")
+  file_permission = "0400"
+  content         = tls_private_key.ssh.private_key_openssh
 }
