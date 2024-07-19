@@ -1,0 +1,15 @@
+{
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+  "features": {
+    // ...
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "1.3.0",
+      "tflint": "latest"
+    }
+    // ...
+ }
+}
